@@ -19,5 +19,18 @@ The URL after the `hpcjobs=` is the webhook URL of the channel.
 Please see [Sending messages using Incoming Webhooks](https://api.slack.com/messaging/webhooks)
 for details of how to set up a webhook for a Slack channel.
 
+# Sending a message
+Here, we assume that `notifier` is somewhere on your PATH.
+
+When you wish to send the following message to `hpcjobs` channel you defined in `notifierrc`:
+```
+$ notifier -c hpcjobs "Job succeeded\!"
+```
+
+When you wish to send the following message to `test` channel you defined in `notifierrc`:
+```
+$ notifier -c test "Job failed."
+```
+
 # LICENSE
 MIT
