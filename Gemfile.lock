@@ -1,0 +1,15 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    slack-notifier (2.4.0)
+    tomlrb (2.0.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  slack-notifier
+  tomlrb
+
+BUNDLED WITH
+   1.17.2

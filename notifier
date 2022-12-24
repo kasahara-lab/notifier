@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'slack-notifier'
+require 'tomlrb'
+
+opt = OptionParser.new
+
+opt.on('-c', '--channel CHANNEL', 'channel name in notifierrc') { |v| @param_channel = v }
+opt.parse!(ARGV)
+if ARGV.length < 1 or @param_channel.nil?
+  puts "Usage: test.rb [options] -c <channel name> message"
+  exit 1
+end
+
+begin
+  config_file_path = "#{ENV['HOME']}/.config/notifier/notifierrc"
+  config = Tomlrb.load_file(config_file_path)
+rescue Errno::ENOENT
+  puts "Config file not found: #{config_file_path}"
+  puts "You need to create the config file with at least one Slack webhook URL."
+  puts "An example with one channel, abc, is shown below:"
+  puts ""
+  puts "[slack]"
+  puts "abc='https://hooks.slack.com/services/abc/AB0123445/AB0123CDE456/bQ2CbS5DfFDSfsafadbFJ'"
+  exit 0
+end
+if config['slack'].nil?
+  puts "You need [slack] section in the config file."
+  puts "An example file '#{ENV['HOME']}/.config/notifier/notifierrc' would be:"
+  puts ""
+  puts "[slack]"
+  puts "abc='https://hooks.slack.com/services/abc/AB0123445/AB0123CDE456/bQ2CbS5DfFDSfsafadbFJ'"
+  exit 0
+end
+if config['slack'][@param_channel].nil?
+  puts "You need to specify a webhook URL in the config file."
+  puts "An example file '#{ENV['HOME']}/.config/notifier/notifierrc' would be:"
+  puts ""
+  puts "[slack]"
+  puts "abc='https://hooks.slack.com/services/abc/AB0123445/AB0123CDE456/bQ2CbS5DfFDSfsafadbFJ'"
+  exit 0
+end
+webhook_url = config['slack'][@param_channel]
+
+message = ARGV[0]
+notifier = Slack::Notifier.new webhook_url
+notifier.ping message
